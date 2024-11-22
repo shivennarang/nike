@@ -36,7 +36,7 @@ app.use(cors(corsOptions));
 // Middleware
 app.use(express.json());
 // Use the product routes
-app.use("/admin", productRoutes);
+
 
 app.use("/users", userRoutes);
 app.use("/cart", cartRoutes);
@@ -477,6 +477,21 @@ app.get("/transaction/history", verifyToken, async (req, res) => {
 app.get("/someRoute", (req, res) => {
   console.log(req); // This should log the cookies object
   res.send("Cookies logged");
+});
+
+// Route to create a new category
+app.post("/admin/create/category", async (req, res) => {
+  try {
+    const newCategory = new Category(req.body);
+    const savedCategory = await newCategory.save();
+    res.status(201).json({ category: savedCategory });
+  } catch (error) {
+    console.error("Error adding category:", error);
+    res.status(500).json({
+      message: "Server Error",
+      error: error.message,
+    });
+  }
 });
 
 // Error handling and server setup
